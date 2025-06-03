@@ -6,22 +6,29 @@
 #include <deque>
 #include <string>
 
+// Shader program handles
 extern GLuint phongProgram, gouraudProgram, currentProgram;
+
+// Lighting and material properties
 extern bool lightFollowsObject;
 extern bool useMetallic;
-extern float zoomScale;
+extern float zoomScale;  // For zoom functionality
+
+// Lighting component toggles - FIXED: Now properly declared
+extern bool useAmbient;
+extern bool useDiffuse; 
+extern bool useSpecular;
+
+// Render modes
 enum RenderMode { WIREFRAME_MODE, SHADING_MODE, TEXTURE_MODE };
 extern RenderMode currentRenderMode;
-// --- material parameters (declared in Globals.cpp) -----------------
+
+// Material parameters
 extern float metallicShininess;
 extern float plasticShininess;
 extern float metallicSpecularStrength;
 extern float plasticSpecularStrength;
 extern bool useGouraud;
-
-extern bool useAmbient;
-extern bool useDiffuse;
-extern bool useSpecular;
 
 // Window dimensions
 extern int windowWidth;
@@ -59,17 +66,17 @@ extern float initialVelocityX, initialVelocityY;
 extern float currentTime;
 extern float gravityStrength;
 
-// NEW: Simulation speed control
+// Simulation speed control
 extern float simulationSpeed;
 
-// NEW: Background color options
+// Background color options
 extern vec4 backgroundColor;
 extern int backgroundColorIndex;
 
-// NEW: Object scaling
+// Object scaling
 extern float objectScale;
 
-// NEW: Grid display
+// Grid display
 extern GridMode gridMode;
 extern vec4 gridColor;
 extern GLuint texID;
@@ -106,7 +113,6 @@ struct TrajectoryPoint {
 extern std::deque<TrajectoryPoint> trajectoryPoints;
 
 // OpenGL variables
-// extern GLuint program;
 extern GLuint modelLoc, projectionLoc, objColorLoc;
 extern GLuint lightDirLoc, viewPosLoc;
 
@@ -139,7 +145,7 @@ extern GLuint vaoTrajectory, vboTrajectory;
 // Function to print help information
 void printHelp();
 
-// NEW: Function to take a screenshot
+// Function to take a screenshot
 void takeScreenshot(const std::string& filename);
 
 #endif

@@ -3,24 +3,35 @@
 #include <algorithm>
 #include <fstream>
 
-// GLuint currentProgram = 0;   // <-- single definition
 /**
  * Window dimensions for the application
  */
-
-// GLuint program = 0;   // <-- single definition
 int windowWidth = 800;
 int windowHeight = 600;
+
+/**
+ * Texture and material properties
+ */
 GLuint texID = 0;
 bool lightFollowsObject = false;
 bool useMetallic = false;
+float zoomScale = 1.0f;  // Zoom functionality
+
+// FIXED: Properly define lighting component toggles
+bool useAmbient = true;
+bool useDiffuse = true;
+bool useSpecular = true;
+
+// Material parameters
 float plasticShininess = 16.0f;
 float metallicShininess = 64.0f;
-
 float plasticSpecularStrength = 0.3f;
 float metallicSpecularStrength = 0.8f;
+
+// Render mode and shading
 RenderMode currentRenderMode = SHADING_MODE; // default
 bool useGouraud = false;
+
 /**
  * Physics constants that control simulation behavior
  */
@@ -96,7 +107,6 @@ std::deque<TrajectoryPoint> trajectoryPoints; // List of trajectory points
 /**
  * OpenGL shader variables
  */
-// GLuint program = 0;              // Shader program handle
 GLuint phongProgram = 0;
 GLuint gouraudProgram = 0;
 GLuint currentProgram = 0;
@@ -147,35 +157,35 @@ GLuint vaoTrajectory = 0, vboTrajectory = 0; // Trajectory VAO and VBO handles
  */
 void printHelp() {
     std::cout << "======== Enhanced Bouncing Ball Simulation ========\n";
-    std::cout << "  Mouse Controls:\n";
-    std::cout << "    Left Mouse Button: Toggle wireframe/solid mode\n";
-    std::cout << "    Right Mouse Button: Cycle objects (Cube, Sphere, Bunny)\n";
-    std::cout << "    Middle Mouse Button: Launch a new ball or restart simulation\n";
+    std::cout << "  Assignment 3 - Shading and Texture Mapping\n";
     std::cout << "\n  Basic Controls:\n";
-    std::cout << "    i, F5, Home, Space: Restart simulation\n";
-    std::cout << "    c: Change color (Shift+c toggles rainbow mode)\n";
-    std::cout << "    p: Cycle trajectory modes (None -> Line -> Strobe)\n";
-    std::cout << "    m: Toggle multiple objects mode\n";
-    std::cout << "    g: Decrease gravity (Shift+g to increase)\n";
-    std::cout << "    e: Toggle particle effects\n";
-    std::cout << "    r: Reset settings to default\n";
-    std::cout << "    1/NumPad1: Switch to Cube\n";
-    std::cout << "    2/NumPad2: Switch to Sphere\n";
-    std::cout << "    3/NumPad3: Switch to Bunny\n";
-    std::cout << "\n  New Features:\n";
-    std::cout << "    b: Change background color\n";
-    std::cout << "    +/-: Adjust simulation speed\n";
-    std::cout << "    z/x: Decrease/increase object size\n";
-    std::cout << "    t: Cycle grid display modes\n";
-    std::cout << "    F12: Take screenshot\n";
     std::cout << "    h, F1: Print this help message\n";
     std::cout << "    q, Escape: Quit\n";
+    std::cout << "    Space, F5: Restart simulation\n";
+    std::cout << "\n  Shading Controls:\n";
+    std::cout << "    S: Toggle between Phong and Gouraud shading\n";
+    std::cout << "    O: Toggle lighting components (Ambient->Diffuse->Specular)\n";
+    std::cout << "    L: Toggle light movement (Fixed/Follow object)\n";
+    std::cout << "    M: Toggle material (Plastic/Metallic)\n";
+    std::cout << "\n  Display Controls:\n";
+    std::cout << "    T: Toggle display mode (Wireframe->Shading->Texture)\n";
+    std::cout << "    I: Toggle texture images\n";
+    std::cout << "    Z: Zoom in\n";
+    std::cout << "    W: Zoom out\n";
+    std::cout << "\n  Object Controls:\n";
+    std::cout << "    1: Switch to Cube\n";
+    std::cout << "    2: Switch to Sphere\n";
+    std::cout << "    3: Switch to Bunny\n";
+    std::cout << "    c: Change color\n";
+    std::cout << "\n  Mouse Controls:\n";
+    std::cout << "    Left: Toggle wireframe/solid\n";
+    std::cout << "    Right: Cycle objects\n";
+    std::cout << "    Middle: Restart simulation\n";
     std::cout << "=================================================\n";
 }
 
 /**
  * Takes a screenshot and saves it to the specified file
- * @param filename The filename to save the screenshot to
  */
 void takeScreenshot(const std::string& filename) {
     // Allocate memory for the pixel data
